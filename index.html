@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>AVL Tree Visualizer</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Butcherman&family=Megrim&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Mystery+Quest&family=Nosifer&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Questrial&family=Rubik+Glitch&family=Sedgwick+Ave+Display&family=Tiro+Devanagari+Sanskrit:ital@0;1&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <h2>AVL Tree Visualizer with Animation</h2>
+    <input type="number" id="nodeValue" placeholder="Enter node value" />
+    <button onclick="insert()">Insert</button>
+
+    <div id="tree-container">
+        <svg id="svg-lines" width="100%" height="100%"></svg>
+    </div>
+
+    <div class="log" id="logBox">
+        <strong>Operation Log:</strong><br />
+    </div>
+    <footer style="margin-top: 50px; font-size: 14px; color: #000;">
+        &copy; 2025 Handcrafts by
+        <a href="https://anirudhabgs.netlify.app/" target="_blank" style="color: #4CAF50; text-decoration: none;">
+            Anirudha
+        </a>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
