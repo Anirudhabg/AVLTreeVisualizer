@@ -29,7 +29,7 @@ An **AVL Tree** is a self-balancing Binary Search Tree (BST) where the differenc
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/Anirudhabg/AVLTreeVisualizer.git
-````
+   ```
 
 2. **Navigate to the project directory:**
 
