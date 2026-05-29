@@ -1,8 +1,3 @@
-/**
- * AVL Tree Visualizer with Animation & Balance Factors
- * File: script.js
- */
-
 class AVLNode {
     constructor(value, x = 0, y = 0) {
         this.value = value;
@@ -14,58 +9,59 @@ class AVLNode {
     }
 }
 
-// Helper to get the height of a node safely
+let rootNode = null;
+let unbalancedSnapshot = null; // Stores snapshot of the unbalanced tree state
+let imbalanceDetectedThisTurn = false; // Prevents overwriting snapshots during recursive calls
+
 function height(node) {
     return node ? node.height : 0;
 }
 
-// Helper to recalculate a node's height based on its children
 function updateHeight(node) {
     node.height = 1 + Math.max(height(node.left), height(node.right));
 }
 
-// Computes the Balance Factor (Left Height - Right Height)
 function getBalance(node) {
     return node ? height(node.left) - height(node.right) : 0;
 }
 
-// Single Right Rotation
+// Deep copies the node tree structure safely
+function cloneTree(node) {
+    if (!node) return null;
+    let copy = new AVLNode(node.value, node.x, node.y);
+    copy.height = node.height;
+    copy.left = cloneTree(node.left);
+    copy.right = cloneTree(node.right);
+    return copy;
+}
+
 function rightRotate(y) {
     log("↳ Sub-step: Single Right Rotate on " + y.value);
     let x = y.left;
     let T2 = x.right;
 
-    // Perform rotation
     x.right = y;
     y.left = T2;
 
-    // Update heights
     updateHeight(y);
     updateHeight(x);
-
     return x;
 }
 
-// Single Left Rotation
 function leftRotate(x) {
     log("↳ Sub-step: Single Left Rotate on " + x.value);
     let y = x.right;
     let T2 = y.left;
 
-    // Perform rotation
     y.left = x;
     x.right = T2;
 
-    // Update heights
     updateHeight(x);
     updateHeight(y);
-
     return y;
 }
 
-// Core AVL Insertion Function
 function insertNode(root, value) {
-    // 1. Standard BST Insertion
     if (!root) {
         log("Inserting " + value);
         return new AVLNode(value);
@@ -80,32 +76,35 @@ function insertNode(root, value) {
         return root;
     }
 
-    // 2. Update height of the current ancestor node
     updateHeight(root);
-
-    // 3. Check Balance Factor to find structural imbalances
     let balance = getBalance(root);
 
-    // Case 1: Left Left (LL) Imbalance -> LL Rotation
+    // Save snapshot only on the FIRST instance of an imbalance detection per insertion
+    if (Math.abs(balance) > 1 && !imbalanceDetectedThisTurn) {
+        unbalancedSnapshot = cloneTree(rootNode); 
+        imbalanceDetectedThisTurn = true;
+    }
+
+    // Case 1: LL Rotation
     if (balance > 1 && value < root.left.value) {
         log(`<strong>[LL Rotation]</strong> Triggered at node ${root.value} to fix Left-Left imbalance.`);
         return rightRotate(root);
     }
 
-    // Case 2: Right Right (RR) Imbalance -> RR Rotation
+    // Case 2: RR Rotation
     if (balance < -1 && value > root.right.value) {
         log(`<strong>[RR Rotation]</strong> Triggered at node ${root.value} to fix Right-Right imbalance.`);
         return leftRotate(root);
     }
 
-    // Case 3: Left Right (LR) Imbalance -> LR Rotation
+    // Case 3: LR Rotation
     if (balance > 1 && value > root.left.value) {
         log(`<strong>[LR Rotation]</strong> Triggered at node ${root.value} to fix Left-Right imbalance (Double Rotation):`);
         root.left = leftRotate(root.left);
         return rightRotate(root);
     }
 
-    // Case 4: Right Left (RL) Imbalance -> RL Rotation
+    // Case 4: RL Rotation
     if (balance < -1 && value < root.right.value) {
         log(`<strong>[RL Rotation]</strong> Triggered at node ${root.value} to fix Right-Left imbalance (Double Rotation):`);
         root.right = rightRotate(root.right);
@@ -115,48 +114,54 @@ function insertNode(root, value) {
     return root;
 }
 
-// Appends actions and logs to the left side log panel
 function log(message) {
     const box = document.getElementById('logBox');
     if (!box) return;
     box.innerHTML += message + "<br/>";
-    box.scrollTop = box.scrollHeight; // Auto-scroll to the bottom
+    box.scrollTop = box.scrollHeight;
 }
 
-// UI State and Selectors
-let rootNode = null;
-const container = document.getElementById("tree-container");
-const svg = document.getElementById("svg-lines");
-
-// Button click interface entry-point
 function insert() {
     const inputEl = document.getElementById("nodeValue");
     const val = parseInt(inputEl.value);
-    
     if (isNaN(val)) return;
     
+    // Reset flags before execution
+    unbalancedSnapshot = null;
+    imbalanceDetectedThisTurn = false;
+
     rootNode = insertNode(rootNode, val);
-    inputEl.value = ""; // Clear input text box
-    renderTree();
+    inputEl.value = ""; 
+    renderTrees();
 }
 
-// Redraws the complete canvas (Nodes and SVG lines)
-function renderTree() {
+// Master rendering manager that controls both output view options
+function renderTrees() {
+    // Render Balanced Tree (Right Side)
+    renderTreeInstance("tree-container", "svg-lines", rootNode);
+
+    // Render Unbalanced Snapshot Tree (Left Side)
+    if (unbalancedSnapshot) {
+        renderTreeInstance("before-container", "before-svg", unbalancedSnapshot);
+    } else {
+        // If no imbalance occurred, "Before" matches "After"
+        renderTreeInstance("before-container", "before-svg", rootNode);
+    }
+}
+
+function renderTreeInstance(containerId, svgId, treeRoot) {
+    const container = document.getElementById(containerId);
+    const svg = document.getElementById(svgId);
     if (!container || !svg) return;
-    
-    // Clear previous DOM nodes and lines
+
     container.querySelectorAll(".node").forEach(n => n.remove());
     svg.innerHTML = "";
     
-    // Auto-calculate structural coordinates recursively
     const width = container.clientWidth;
-    assignCoordinates(rootNode, width / 2, 40, width / 4);
-    
-    // Render the graphics
-    drawTree(rootNode);
+    assignCoordinates(treeRoot, width / 2, 40, width / 4);
+    drawTreeInstance(container, svg, treeRoot);
 }
 
-// Recursively calculates positions for each node based on parent position
 function assignCoordinates(node, x, y, offset) {
     if (!node) return;
     node.x = x;
@@ -165,36 +170,29 @@ function assignCoordinates(node, x, y, offset) {
     assignCoordinates(node.right, x + offset, y + 70, offset / 1.8);
 }
 
-// Generates the DOM elements and SVGs for display
-function drawTree(node, parent = null) {
+function drawTreeInstance(container, svg, node, parent = null) {
     if (!node) return;
 
-    // Create container for the node circle
     const nodeEl = document.createElement("div");
     nodeEl.className = "node";
     nodeEl.innerText = node.value;
     nodeEl.style.left = (node.x - 20) + "px";
     nodeEl.style.top = (node.y - 20) + "px";
 
-    // --- Dynamic Balance Factor Badge Generator ---
     const bf = getBalance(node);
     const bfEl = document.createElement("span");
     bfEl.className = "balance-factor";
     bfEl.innerText = bf;
     
-    // If the node is currently breaking AVL constraints, make the badge red
     if (Math.abs(bf) > 1) {
-        bfEl.style.backgroundColor = "#e74c3c"; // Critical Imbalance
+        bfEl.style.backgroundColor = "#e74c3c"; 
     } else {
-        bfEl.style.backgroundColor = "#34495e"; // Normal Stable Node
+        bfEl.style.backgroundColor = "#34495e"; 
     }
     
     nodeEl.appendChild(bfEl);
-    // ----------------------------------------------
-
     container.appendChild(nodeEl);
 
-    // Draw connecting branch lines
     if (parent) {
         const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
         line.setAttribute("x1", parent.x);
@@ -206,7 +204,6 @@ function drawTree(node, parent = null) {
         svg.appendChild(line);
     }
 
-    // Recurse children
-    drawTree(node.left, node);
-    drawTree(node.right, node);
+    drawTreeInstance(container, svg, node.left, node);
+    drawTreeInstance(container, svg, node.right, node);
 }

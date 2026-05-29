@@ -1,6 +1,3 @@
-/* ==========================================
-   1. GLOBAL & LAYOUT STYLES
-   ========================================== */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -12,46 +9,29 @@ body {
     font-family: "Montserrat", sans-serif;
     padding: 20px;
     background-color: #f0f0f0;
-
-    /* Flexbox creates the side-by-side layout */
     display: flex;
     gap: 20px;
-    /* Space between the sidebar and the main content */
     align-items: flex-start;
     min-height: 100vh;
 }
 
-/* Sidebar panel on the left */
 .log {
     background: #f4f4f4;
     padding: 15px;
     border: 1px solid #ccc;
     border-radius: 4px;
-
-    /* Sidebar sizing */
     width: 280px;
     min-width: 280px;
-    /* Prevents the sidebar from shrinking */
     height: calc(100vh - 40px);
-    /* Fills the screen height minus padding */
-
-    /* Scroll behavior */
     overflow-y: auto;
     text-align: left;
 }
 
-/* Main container on the right */
 .main-content {
     flex-grow: 1;
-    /* Takes up all remaining width */
     text-align: center;
-    /* Keeps inputs and headings centered */
 }
 
-
-/* ==========================================
-   2. INTERACTIVE ELEMENTS
-   ========================================== */
 input,
 button {
     padding: 10px;
@@ -59,13 +39,31 @@ button {
     margin: 5px;
 }
 
+/* Side by Side Layout Containers */
+.visualizer-layouts {
+    display: flex;
+    gap: 20px;
+    margin-top: 30px;
+    width: 100%;
+}
 
-/* ==========================================
-   3. TREE & GRAPH VISUALIZATION
-   ========================================== */
-#tree-container {
+.tree-panel {
+    flex: 1;
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border: 1px solid #ddd;
+}
+
+.tree-panel h3 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: #555;
+}
+
+.tree-wrapper {
     position: relative;
-    margin-top: 40px;
     min-height: 400px;
     width: 100%;
 }
@@ -79,12 +77,10 @@ button {
     width: 40px;
     height: 40px;
     line-height: 38px;
-    /* Adjusted slightly for border alignment */
     text-align: center;
     transition: all 0.5s ease;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
     z-index: 2;
-    /* Ensures nodes sit above the connection lines */
 }
 
 svg {
@@ -96,14 +92,6 @@ svg {
     pointer-events: none;
     overflow: visible;
     z-index: 1;
-    /* Places SVGs behind the nodes */
-}
-
-/* Balance Factor Badge styling */
-.node {
-    position: absolute;
-    /* Ensure child elements like the badge position relative to the node */
-    position: absolute;
 }
 
 .balance-factor {
@@ -119,6 +107,5 @@ svg {
     border-radius: 50%;
     text-align: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    font-family: sans-serif;
     z-index: 10;
 }
