@@ -1,28 +1,68 @@
+/* ==========================================
+   1. GLOBAL & LAYOUT STYLES
+   ========================================== */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     font-family: "Montserrat", sans-serif;
-
 }
 
 body {
     font-family: "Montserrat", sans-serif;
     padding: 20px;
-    text-align: center;
     background-color: #f0f0f0;
+    
+    /* Flexbox creates the side-by-side layout */
+    display: flex;
+    gap: 20px;            /* Space between the sidebar and the main content */
+    align-items: flex-start; 
+    min-height: 100vh;
 }
 
+/* Sidebar panel on the left */
+.log {
+    background: #f4f4f4;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    
+    /* Sidebar sizing */
+    width: 280px; 
+    min-width: 280px;     /* Prevents the sidebar from shrinking */
+    height: calc(100vh - 40px); /* Fills the screen height minus padding */
+    
+    /* Scroll behavior */
+    overflow-y: auto;
+    text-align: left;
+}
+
+/* Main container on the right */
+.main-content {
+    flex-grow: 1;         /* Takes up all remaining width */
+    text-align: center;   /* Keeps inputs and headings centered */
+}
+
+
+/* ==========================================
+   2. INTERACTIVE ELEMENTS
+   ========================================== */
 input,
 button {
     padding: 10px;
     font-size: 16px;
+    margin: 5px;
 }
 
+
+/* ==========================================
+   3. TREE & GRAPH VISUALIZATION
+   ========================================== */
 #tree-container {
     position: relative;
     margin-top: 40px;
     min-height: 400px;
+    width: 100%;
 }
 
 .node {
@@ -33,29 +73,20 @@ button {
     border: 1px solid #333;
     width: 40px;
     height: 40px;
-    line-height: 40px;
+    line-height: 38px;    /* Adjusted slightly for border alignment */
     text-align: center;
     transition: all 0.5s ease;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    z-index: 2;           /* Ensures nodes sit above the connection lines */
 }
 
 svg {
     position: absolute;
     top: 0;
     left: 0;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
     overflow: visible;
-}
-
-.log {
-    margin-top: 20px;
-    text-align: left;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-    background: #f4f4f4;
-    padding: 10px;
-    border: 1px solid #000;
-    height: 150px;
-    overflow-y: scroll;
+    z-index: 1;           /* Places SVGs behind the nodes */
 }
