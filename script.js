@@ -81,7 +81,7 @@ function insertNode(root, value) {
 
     // Save snapshot only on the FIRST instance of an imbalance detection per insertion
     if (Math.abs(balance) > 1 && !imbalanceDetectedThisTurn) {
-        unbalancedSnapshot = cloneTree(rootNode); 
+        unbalancedSnapshot = cloneTree(rootNode);
         imbalanceDetectedThisTurn = true;
     }
 
@@ -114,10 +114,14 @@ function insertNode(root, value) {
     return root;
 }
 
+// Initialize a global counter for the logs
+let logCounter = 1;
+
 function log(message) {
     const box = document.getElementById('logBox');
     if (!box) return;
-    box.innerHTML += message + "<br/>";
+    box.innerHTML += `<strong>${logCounter}.</strong> ${message}<br/>`;
+    logCounter++;
     box.scrollTop = box.scrollHeight;
 }
 
@@ -125,13 +129,13 @@ function insert() {
     const inputEl = document.getElementById("nodeValue");
     const val = parseInt(inputEl.value);
     if (isNaN(val)) return;
-    
+
     // Reset flags before execution
     unbalancedSnapshot = null;
     imbalanceDetectedThisTurn = false;
 
     rootNode = insertNode(rootNode, val);
-    inputEl.value = ""; 
+    inputEl.value = "";
     renderTrees();
 }
 
@@ -156,7 +160,7 @@ function renderTreeInstance(containerId, svgId, treeRoot) {
 
     container.querySelectorAll(".node").forEach(n => n.remove());
     svg.innerHTML = "";
-    
+
     const width = container.clientWidth;
     assignCoordinates(treeRoot, width / 2, 40, width / 4);
     drawTreeInstance(container, svg, treeRoot);
@@ -183,13 +187,13 @@ function drawTreeInstance(container, svg, node, parent = null) {
     const bfEl = document.createElement("span");
     bfEl.className = "balance-factor";
     bfEl.innerText = bf;
-    
+
     if (Math.abs(bf) > 1) {
-        bfEl.style.backgroundColor = "#e74c3c"; 
+        bfEl.style.backgroundColor = "#e74c3c";
     } else {
-        bfEl.style.backgroundColor = "#34495e"; 
+        bfEl.style.backgroundColor = "#34495e";
     }
-    
+
     nodeEl.appendChild(bfEl);
     container.appendChild(nodeEl);
 
@@ -206,4 +210,12 @@ function drawTreeInstance(container, svg, node, parent = null) {
 
     drawTreeInstance(container, svg, node.left, node);
     drawTreeInstance(container, svg, node.right, node);
+}
+
+// Function to close the rules popup modal screen
+function closeRules() {
+    const modal = document.getElementById("rules-modal");
+    if (modal) {
+        modal.style.display = "none";
+    }
 }

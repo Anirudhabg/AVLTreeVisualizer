@@ -13,17 +13,79 @@
 </head>
 
 <body>
+
+    <div id="rules-modal" class="modal-overlay">
+        <div class="modal-content-box">
+            <h2>📜 Rules of AVL Trees</h2>
+            <hr>
+
+            <div class="rules-body">
+                <h3>1. Self-Balancing Property</h3>
+                <p>An AVL tree is a self-balancing <strong>Binary Search Tree (BST)</strong>. The left subtree contains
+                    values smaller than the parent node, and the right subtree contains values larger.</p>
+
+                <h3>2. The Balance Factor (BF) Rule</h3>
+                <p>For <em>every single node</em> in the tree, the heights of its left and right subtrees can differ by
+                    <strong>at most 1</strong>. The formula is calculated as:</p>
+                <div class="formula-box" style="text-align: center; font-weight: bold; font-family: monospace;">
+                    BF = Height(Left Subtree) - Height(Right Subtree)
+                </div>
+                <p>A node is considered <strong>balanced</strong> if its BF is <strong>-1, 0, or 1</strong>. If the BF
+                    becomes <strong>2 or -2</strong>, it is unbalanced and a rotation triggers immediately.</p>
+
+                <h3>3. The 4 Types of Rotations</h3>
+                <ul>
+                    <li><strong>LL Rotation:</strong> Left subtree is heavy, and insertion happened on the left child's
+                        left. Fixed with a single right rotation.</li>
+                    <li><strong>RR Rotation:</strong> Right subtree is heavy, and insertion happened on the right
+                        child's right. Fixed with a single left rotation.</li>
+                    <li><strong>LR Rotation:</strong> Left subtree is heavy, but insertion happened on the left child's
+                        right. Fixed with a double rotation (Left then Right).</li>
+                    <li><strong>RL Rotation:</strong> Right subtree is heavy, but insertion happened on the right
+                        child's left. Fixed with a double rotation (Right then Left).</li>
+                </ul>
+
+                <h3>4. Rule for Multiple Imbalanced Nodes</h3>
+                <p>If a single insertion causes <strong>multiple ancestor nodes</strong> to become imbalanced
+                    simultaneously, the AVL engine evaluates them <strong>bottom-up</strong>.</p>
+                <div class="formula-box" style="background-color: #fff3cd; border-left: 4px solid #ffc107;">
+                    <p style="margin: 0; color: #664d03;"><strong>Deepest Node Priority:</strong> The tree travels
+                        backward from the newly inserted leaf upward toward the root. It will immediately rotate and fix
+                        the <strong>lowest (deepest) imbalanced node</strong> first.</p>
+                </div>
+                <p>Once this lowest sub-tree is rotated, its height shrinks back down, which naturally fixes the balance
+                    factors of all higher ancestors further up the tree automatically!</p>
+
+                <h3>5. Rule for Extended Insertion Paths</h3>
+                <p>When an item is inserted deep down an extended branch (stretching 3 or more nodes deep), the tree
+                    ignores any path history past the <strong>first two levels</strong> below the critical zone.</p>
+                <div class="formula-box" style="background-color: #e8f4fd; border-left: 4px solid #2196f3;">
+                    <p style="margin: 0; color: #0d3c61;"><strong>First Two Steps Rule:</strong> Imbalance
+                        classification is determined strictly by looking at the <strong>first two steps</strong> taken down from the
+                        node where the imbalance is caught.</p>
+                </div>
+                <p>No matter how deep the node is inserted, it will always map back to one of the 4 standard core
+                    rotations (LL, RR, LR, or RL) depending entirely on those initial two structural directions.</p>
+            </div>
+
+            <button id="close-rules-btn" onclick="closeRules()">Get Started</button>
+        </div>
+    </div>
+
+
     <div class="log" id="logBox">
         <strong>Operation Log:</strong><br />
     </div>
 
+
     <div class="main-content">
-        <h2>AVL Tree Visualizer with Animation</h2>
-        
+        <h2 style="color: #45a049;">AVL Tree Visualizer with Animation</h2>
+
         <input type="number" id="nodeValue" placeholder="Enter node value" />
         <button onclick="insert()">Insert</button>
 
         <div class="visualizer-layouts">
+
             <div class="tree-panel">
                 <h3>Before Balancing</h3>
                 <div id="before-container" class="tree-wrapper">
@@ -37,10 +99,11 @@
                     <svg id="svg-lines" width="100%" height="100%"></svg>
                 </div>
             </div>
+
         </div>
 
         <footer style="margin-top: 50px; font-size: 14px; color: #000;">
-            &copy; 2025 Handcrafts by
+            &copy; 2026 Handcrafts by
             <a href="https://anirudhabgs.netlify.app/" target="_blank" style="color: #4CAF50; text-decoration: none;">
                 Anirudha
             </a>
